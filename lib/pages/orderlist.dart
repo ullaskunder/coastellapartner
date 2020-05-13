@@ -9,7 +9,7 @@ class _OrderListPageState extends State<OrderListPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+      color: Color(0xffc62828),
       child: Center(child: Text('OrderList')),
     );
   }

@@ -77,7 +77,7 @@ class _SplashPageState extends State<SplashPage> {
                gradient: LinearGradient(
                  colors: [
                    Colors.redAccent,
-                   Colors.red,
+                   Color(0xffc62828),
                  ]
                )
              ),

@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xffc62828),
         body: Padding(
           padding: EdgeInsets.all(20),
           child: Container(
@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: height * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(60),
-                        color: Color.fromRGBO(255, 255, 255, 0.5)),
+                        color: Color.fromRGBO(255, 255, 255, 0.2)),
                     child: Row(
                       children: <Widget>[
                         Padding(
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: height * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(60),
-                        color: Color.fromRGBO(255, 255, 255, 0.5)),
+                        color: Color.fromRGBO(255, 255, 255, 0.2)),
                     child: Row(
                       children: <Widget>[
                         Padding(
@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: height * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(60),
-                        color: Color.fromRGBO(255, 255, 255, 0.5)),
+                        color: Color.fromRGBO(255, 255, 255, 0.2)),
                     child: Row(
                       children: <Widget>[
                         Padding(

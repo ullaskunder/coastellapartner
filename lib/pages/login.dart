@@ -97,7 +97,7 @@ class _LoginState extends State<LoginPage> {
                 SizedBox(height: 20,),
 
                 RoundedLoadingButton(
-                  color: Colors.red,
+                  color: Color(0xffc62828),
                   child: AutoSizeText(
                       'Login',
                       style: GoogleFonts.nunitoSans(

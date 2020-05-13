@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: pages[currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xffc62828),
         index: currentIndex,
         items: <Widget>[
           Icon(Icons.settings,),
