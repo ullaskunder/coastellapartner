@@ -9,7 +9,12 @@ import 'package:costellapartner/pages/profile.dart';
 
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/home',
+  debugShowCheckedModeBanner: false,
+  title: 'COASTELLA',
+  theme: ThemeData(
+    primaryColor: Color(0xffc62828),
+  ),
+  initialRoute: '/splash',
   routes: {
     '/login':(context) => LoginPage(),
     '/splash':(context) => SplashPage(),

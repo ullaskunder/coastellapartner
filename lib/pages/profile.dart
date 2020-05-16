@@ -2,8 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:costellapartner/pages/login.dart';
+import 'package:costellapartner/pages/profiledetail.dart';
+import 'package:costellapartner/pages/orderhistory.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loading_animations/loading_animations.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -17,164 +19,177 @@ class _ProfilePageState extends State<ProfilePage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: Color(0xffc62828),
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child: Container(
-            height: height,
-            width: width,
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: height * 0.08,
-                ),
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/costella.png'),
-                  radius: width * 0.18,
-                ),
-                SizedBox(
-                  height: height * 0.01,
-                ),
-                AutoSizeText(
-                  'Shop Name',
-                  style: GoogleFonts.nunitoSans(
-                      fontSize: 40, color: Colors.white, letterSpacing: 2),
-                ),
-                SizedBox(
-                  height: height * 0.06,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    print('hello');
-                  },
-                  child: Container(
-                    width: width,
-                    height: height * 0.1,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(60),
-                        color: Color.fromRGBO(255, 255, 255, 0.2)),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.06, 0, 0, 0),
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.04, 0, 0, 0),
-                          child: AutoSizeText(
-                            'Profile',
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 20,
-                              color: Colors.white,
-                              letterSpacing: 2,
+        backgroundColor: Colors.grey,
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Container(
+              height: height,
+              width: width,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: height * 0.08,
+                  ),
+                  CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/costella.png'),
+                    radius: width * 0.18,
+                  ),
+                  SizedBox(
+                    height: height * 0.01,
+                  ),
+                  AutoSizeText(
+                    'Shop Name',
+                    style: GoogleFonts.nunitoSans(
+                        fontSize: 40, color: Colors.grey[800], letterSpacing: 2),
+                  ),
+                  SizedBox(
+                    height: height * 0.06,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print('hello');
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => ProfileDetail()));
+                    },
+                    child: Container(
+                      width: width,
+                      height: height * 0.1,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(60),
+                          color: Color.fromRGBO(255, 255, 255, 0.6)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.grey[800],
+                              size: 28,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.44, 0, 0, 0),
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    print('hello');
-                  },
-                  child: Container(
-                    width: width,
-                    height: height * 0.1,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(60),
-                        color: Color.fromRGBO(255, 255, 255, 0.2)),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.06, 0, 0, 0),
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.04, 0, 0, 0),
-                          child: AutoSizeText(
-                            'Feedback',
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 20,
-                              color: Colors.white,
-                              letterSpacing: 2,
+                          Expanded(
+                            flex: 4,
+                            child: AutoSizeText(
+                              'Profile',
+                              style: GoogleFonts.nunitoSans(
+                                fontSize: 20,
+                                color: Colors.grey[800],
+                                letterSpacing: 2,
+                              ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.37, 0, 0, 0),
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-                GestureDetector(
-                  onTap: () {
-                  },
-                  child: Container(
-                    width: width,
-                    height: height * 0.1,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(60),
-                        color: Color.fromRGBO(255, 255, 255, 0.2)),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.06, 0, 0, 0),
-                          child: Icon(
-                            Icons.remove_circle,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.04, 0, 0, 0),
-                          child: AutoSizeText(
-                            'Logout',
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 20,
-                              color: Colors.white,
-                              letterSpacing: 2,
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey[800],
+                              size: 28,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(width * 0.44, 0, 0, 0),
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print('hello');
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => OrderHistory()));
+                    },
+                    child: Container(
+                      width: width,
+                      height: height * 0.1,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(60),
+                          color: Color.fromRGBO(255, 255, 255, 0.6)),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.history,
+                              color: Colors.grey[800],
+                              size: 28,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: AutoSizeText(
+                              'Orders History',
+                              style: GoogleFonts.nunitoSans(
+                                fontSize: 20,
+                                color: Colors.grey[800],
+                                letterSpacing: 2,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey[800],
+                              size: 28,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      logoutBottomSheet('LOGOUT');
+                      //showAlertDialog();
+                    },
+                    child: Container(
+                      width: width,
+                      height: height * 0.1,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(60),
+                          color: Color.fromRGBO(255, 255, 255, 0.6)),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.remove_circle,
+                              color: Colors.grey[800],
+                              size: 28,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: AutoSizeText(
+                              'Logout',
+                              style: GoogleFonts.nunitoSans(
+                                fontSize: 20,
+                                color: Colors.grey[800],
+                                letterSpacing: 2,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey[800],
+                              size: 28,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
@@ -185,11 +200,79 @@ class _ProfilePageState extends State<ProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       prefs.setString('login', '');
-      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
     });
   }
 
-  /*void showSnackBarMessage() {
+  void logoutBottomSheet(String status) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.remove_circle_outline),
+                title: Text('$status',
+                style: GoogleFonts.nunitoSans(
+                  letterSpacing: 1,
+                ),),
+                onTap: () => {
+                  Navigator.pop(context),
+                  logout(),
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cancel),
+                title: Text('Close',
+                style: GoogleFonts.nunitoSans(
+                  letterSpacing: 1,
+                ),),
+                onTap: () => {
+                  Navigator.pop(context),
+                },
+              )
+            ],
+          );
+        });
+  }
+
+/*showAlertDialog()
+  {
+    return  Alert(
+      context: context,
+      type: AlertType.none,
+      title: "CONFIRMATION",
+      desc: "DO you wanr to logout?",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "LOGOUT",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            logout();
+            Navigator.pop(context);
+
+            },
+          color: Colors.green[800],
+        ),
+        DialogButton(
+          child: Text(
+            "CANCELL",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          color: Colors.red[800],
+        ),
+
+      ],
+    ).show();
+  }*/
+
+/*void showSnackBarMessage() {
     final snackBar = new SnackBar(
       content: Text('Logging out'),
       duration: Duration(seconds: 2),

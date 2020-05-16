@@ -33,6 +33,12 @@ dependencies:
   rounded_loading_button: ^1.0.0
   loading_animations: ^2.1.0
   flutter_staggered_grid_view: ^0.2.7
+  url_launcher: ^5.4.7
+  toggle_bar: ^1.0.0
+  rflutter_alert: ^1.0.3
+  share: ^0.6.4+2
+  audioplayer: 0.8.1
+  audioplayer_web: 0.7.1
 
 
   # The following adds the Cupertino Icons font to your application.

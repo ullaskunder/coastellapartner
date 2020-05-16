@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:costellapartner/pages/home.dart';
 import 'package:costellapartner/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -13,56 +15,83 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   String val;
 
-  Future<bool> isLoggedIn() async
-  {
+  Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      val = (prefs.getString('login')??'');
+      val = (prefs.getString('login') ?? '');
     });
     print('login : ' + val);
-    await Future.delayed(Duration(seconds: 2));
-    if(val == 'done')
+    await Future.delayed(Duration(seconds: 4));
+    if (val == 'done')
       return true;
     else
       return false;
   }
 
-  void navigateToHome()
-  {
+  void navigateToHome() {
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (BuildContext context) => HomePage()
-        )
-    );
+        MaterialPageRoute(builder: (BuildContext context) => HomePage()));
   }
 
-  void navigateToLogin()
-  {
+  void navigateToLogin() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (BuildContext context) => LoginPage()
-      )
-    );
+        MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    isLoggedIn().then((value)
-        {
-          if(value)
-            {
-              navigateToHome();
-            }
-          else
-            {
-              navigateToLogin();
-            }
-
-        }
-
-    );
+    checkForInternetConnectivity();
   }
+
+  void checkForInternetConnectivity() async
+  {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+        isLoggedIn().then((value) {
+          if (value) {
+            navigateToHome();
+          } else {
+            navigateToLogin();
+          }
+        });
+      }
+    } on SocketException catch (_) {
+      print('not connected');
+      errorMessage('Please check your internet connection!');
+    }
+  }
+
+  void errorMessage(String status) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.signal_cellular_connected_no_internet_4_bar),
+                title: Text('$status'),
+                //onTap: () => {Navigator.pop(context)},
+              ),
+              ListTile(
+                leading: Icon(Icons.swap_vertical_circle),
+                title: Text('Try Again'),
+                onTap: () => {
+                  Navigator.pop(context),
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => SplashPage()))
+                },
+              )
+            ],
+          );
+        });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,24 +101,20 @@ class _SplashPageState extends State<SplashPage> {
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
-           Container(
-             decoration: BoxDecoration(
-               gradient: LinearGradient(
-                 colors: [
-                   Colors.redAccent,
-                   Color(0xffc62828),
-                 ]
-               )
-             ),
-           ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+              ),
+            ),
             Shimmer.fromColors(
                 child: Container(
                   padding: EdgeInsets.all(50),
                   child: Text(
                     'Costella',
                     style: GoogleFonts.nunitoSans(
-                      fontSize: 60,
-                     /* shadows: <Shadow>[
+                      fontSize: 40,
+                      letterSpacing: 2,
+                      /* shadows: <Shadow>[
                         Shadow(
                           blurRadius: 18,
                           color: Colors.black87,
@@ -99,12 +124,11 @@ class _SplashPageState extends State<SplashPage> {
                     ),
                   ),
                 ),
-                baseColor: Colors.white,
-                highlightColor: Colors.red)
+                baseColor: Colors.grey[800],
+                highlightColor: Colors.white)
           ],
         ),
       ),
     );
   }
-
 }

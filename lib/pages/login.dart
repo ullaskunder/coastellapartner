@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:costellapartner/pages/home.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:http/http.dart' as http;
+import 'package:costellapartner/services/getshopdetails.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,10 +17,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginPage> {
-  TextEditingController shopID = new TextEditingController();
-  TextEditingController phoneNumber = new TextEditingController();
-  final RoundedLoadingButtonController loginButton = new RoundedLoadingButtonController();
-
   @override
   void initState() {
     super.initState();
@@ -29,160 +29,162 @@ class _LoginState extends State<LoginPage> {
     super.dispose();
   }
 
+  TextEditingController shopID = new TextEditingController();
+  TextEditingController phoneNumber = new TextEditingController();
+  final RoundedLoadingButtonController loginButton =
+      new RoundedLoadingButtonController();
+
+  var shopData = List<ShopDetails>();
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
+        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.red,
-                ),
-                SizedBox(
-                  height: 80,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(143, 148, 251, 0.5),
-                              blurRadius: 20,
-                              offset: Offset(0, 10))
-                        ]),
-                    padding: EdgeInsets.all(10),
-                    child: Form(
-                      child: Column(
-                        children: <Widget>[
-                          TextField(
-                            controller: shopID,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Shop ID',
-                              hintStyle: TextStyle(
-                                color: Colors.red[200],
-                              ),
-                            ),
-                          ),
-                          Divider(),
-                          TextField(
-                            controller: phoneNumber,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Phone Number',
-                              hintStyle: TextStyle(
-                                color: Colors.red[200],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10,),
-
-                        ],
+          child: SafeArea(
+            child: Container(
+              height: height,
+              width: width,
+              child: Column(
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        height: height * 0.4,
+                        width: width,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(120))),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20,),
-
-                RoundedLoadingButton(
-                  color: Color(0xffc62828),
-                  child: AutoSizeText(
-                      'Login',
-                      style: GoogleFonts.nunitoSans(
-                      color: Colors.white,
-                        letterSpacing: 2,
-                        fontSize: 20
-                      ),
-                  ),
-                  controller: loginButton,
-                  onPressed: _doSomething,
-                )
-               /* Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(143, 148, 251, 0.5),
-                              blurRadius: 20,
-                              offset: Offset(0, 10))
-                        ]),
-                    width:  MediaQuery.of(context).size.width * 0.4,
-                    height:  MediaQuery.of(context).size.height * 0.07,
-                    child:Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          getData();
-                        },
-                        child: Center(
-                          child: Text(
-                            'LOGIN',
-                            style: TextStyle(
-                              fontSize: 20,
+                      Positioned(
+                        top: height * 0.2,
+                        left: width * 0.14,
+                        child: AutoSizeText(
+                          'Coastella',
+                          style: GoogleFonts.nunitoSans(
+                              letterSpacing: 4,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 64),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: height * 0.1,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Container(
+                      width: width * 0.8,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color.fromRGBO(143, 148, 251, 0.5),
+                                blurRadius: 20,
+                                offset: Offset(0, 10))
+                          ]),
+                      padding: EdgeInsets.all(10),
+                      child: Form(
+                        child: Column(
+                          children: <Widget>[
+                            TextField(
+                              controller: shopID,
+                              style: GoogleFonts.nunitoSans(
+                                letterSpacing: 2,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Shop ID',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                ),
+                              ),
                             ),
-                          ),
+                            Divider(
+                              height: height * 0.04,
+                            ),
+                            TextField(
+                              controller: phoneNumber,
+                              style: GoogleFonts.nunitoSans(letterSpacing: 2),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Phone Number',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ),*/
-              ],
+                  SizedBox(
+                    height: height * 0.04,
+                  ),
+                  RoundedLoadingButton(
+                    width: width * 0.8,
+                    color: Colors.grey[800],
+                    child: AutoSizeText(
+                      'Login',
+                      style: GoogleFonts.nunitoSans(
+                          color: Colors.white, letterSpacing: 2, fontSize: 20),
+                    ),
+                    controller: loginButton,
+                    onPressed: () {
+                      loadAnimation();
+                      getTextFieldData();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ));
   }
 
-  void getData()
-  {
-    if(shopID.text.isEmpty)
-    {
-      errorMessage('Enter a shop ID');
+  void getTextFieldData() {
+    if (shopID.text.isEmpty && phoneNumber.text.isEmpty) {
+      errorMessage('Enter shop ID and Phone number');
       print('Enter shop id');
-    }
-    if(phoneNumber.text.isEmpty)
-    {
+    } else if (shopID.text.isEmpty) {
+      errorMessage('Enter a shop id');
+      print('Enter phone number');
+    } else if (phoneNumber.text.isEmpty) {
       errorMessage('Enter a phone number');
       print('Enter phone number');
-    }
-    if(shopID.text.isNotEmpty && phoneNumber.text.isNotEmpty)
-    {
-      errorMessage('Loading....');
+    } else {
+      checkLogin();
       print(shopID.text + phoneNumber.text);
-      saveLoginState();
     }
   }
 
-  void saveLoginState() async
-  {
+  void saveLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       prefs.setString('login', 'done');
     });
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => HomePage()));
   }
 
-  void errorMessage(String status)
-  {
+  void errorMessage(String status) {
     showModalBottomSheet(
         context: context,
-        builder: (context){
+        builder: (context) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -190,22 +192,49 @@ class _LoginState extends State<LoginPage> {
               ListTile(
                 leading: Icon(Icons.message),
                 title: Text('$status'),
-                onTap: () => {Navigator.pop(context)},
+                //onTap: () => {Navigator.pop(context)},
               ),
               ListTile(
                 leading: Icon(Icons.cancel),
                 title: Text('Close'),
-                onTap: () => {Navigator.pop(context)},
+                onTap: () => {
+                  Navigator.pop(context),
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => LoginPage()))
+                },
               )
             ],
           );
-        }
-    );
+        });
   }
-  void _doSomething() async {
+
+  void loadAnimation() async {
     Timer(Duration(seconds: 3), () {
-      print('hello');
       loginButton.success();
     });
+  }
+
+  void checkLogin() async {
+    String id = shopID.text;
+    String num = phoneNumber.text;
+
+    var url = 'http://coastella.in/coastellapartner/php/login.php';
+    Map data = {"shopid": id, "phonenumber": num};
+
+    var response = await http.post(url, body: data);
+    String status = response.body;
+    print(status);
+    if (response.statusCode == 200) {
+      if (status == 'success;') {
+        print('login done');
+        saveLoginState();
+      } else {
+        print('login failed');
+        errorMessage('Login Failed! Try again');
+      }
+    } else {
+      print('login failed');
+      errorMessage('Login Failed! Try again');
+    }
   }
 }
