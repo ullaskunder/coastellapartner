@@ -12,7 +12,7 @@ void main() => runApp(MaterialApp(
   debugShowCheckedModeBanner: false,
   title: 'COASTELLA',
   theme: ThemeData(
-    primaryColor: Color(0xffc62828),
+    primaryColor: Colors.grey[800],
   ),
   initialRoute: '/splash',
   routes: {

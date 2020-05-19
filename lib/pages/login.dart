@@ -89,7 +89,7 @@ class _LoginState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(14),
                           boxShadow: [
                             BoxShadow(
-                                color: Color.fromRGBO(143, 148, 251, 0.5),
+                                color: Color.fromRGBO(0, 0, 0, 0.6),
                                 blurRadius: 20,
                                 offset: Offset(0, 10))
                           ]),
@@ -172,13 +172,14 @@ class _LoginState extends State<LoginPage> {
     }
   }
 
-  void saveLoginState() async {
+  Future saveLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
+     setState(() {
       prefs.setString('login', 'done');
+      prefs.setString('shopId', shopID.text);
+      prefs.setString('phoneNumber', phoneNumber.text);
     });
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
   }
 
   void errorMessage(String status) {

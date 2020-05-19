@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:costellapartner/pages/orderhistory.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -14,6 +17,62 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  Future<void> logout() async {
+    //showSnackBarMessage();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.remove('shopId');
+      prefs.remove('login');
+      prefs.remove('phoneNumber');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+    });
+  }
+
+  void logoutBottomSheet(String status) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.remove_circle_outline),
+                title: Text(
+                  '$status',
+                  style: GoogleFonts.nunitoSans(
+                    letterSpacing: 1,
+                  ),
+                ),
+                onTap: () => {
+                  Navigator.pop(context),
+                  logout(),
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cancel),
+                title: Text(
+                  'Close',
+                  style: GoogleFonts.nunitoSans(
+                    letterSpacing: 1,
+                  ),
+                ),
+                onTap: () => {
+                  Navigator.pop(context),
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -40,9 +99,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: height * 0.01,
                   ),
                   AutoSizeText(
-                    'Shop Name',
+                    'Coastella - Partner',
                     style: GoogleFonts.nunitoSans(
-                        fontSize: 40, color: Colors.grey[800], letterSpacing: 2),
+                        fontSize: 32,
+                        color: Colors.grey[800],
+                        letterSpacing: 2),
                   ),
                   SizedBox(
                     height: height * 0.06,
@@ -50,8 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   GestureDetector(
                     onTap: () {
                       print('hello');
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ProfileDetail()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ProfileDetail()));
                     },
                     child: Container(
                       width: width,
@@ -195,49 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ));
   }
 
-  Future<void> logout() async {
-    //showSnackBarMessage();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      prefs.setString('login', '');
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
-    });
-  }
 
-  void logoutBottomSheet(String status) {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.remove_circle_outline),
-                title: Text('$status',
-                style: GoogleFonts.nunitoSans(
-                  letterSpacing: 1,
-                ),),
-                onTap: () => {
-                  Navigator.pop(context),
-                  logout(),
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.cancel),
-                title: Text('Close',
-                style: GoogleFonts.nunitoSans(
-                  letterSpacing: 1,
-                ),),
-                onTap: () => {
-                  Navigator.pop(context),
-                },
-              )
-            ],
-          );
-        });
-  }
 
 /*showAlertDialog()
   {

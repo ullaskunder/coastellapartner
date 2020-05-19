@@ -99,7 +99,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
                  color: Colors.white,
                  boxShadow: [
                    BoxShadow(
-                       color: Color.fromRGBO(143, 148, 251, 0.4),
+                       color: Color.fromRGBO(0, 0, 0, 0.6),
                        blurRadius: 20,
                        offset: Offset(0, 10))
                  ]
@@ -132,7 +132,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                          color: Color.fromRGBO(143, 148, 251, 0.4),
+                          color: Color.fromRGBO(0, 0, 0, 0.6),
                           blurRadius: 20,
                           offset: Offset(0, 10))
                     ]
@@ -172,7 +172,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
                         color: Colors.grey[800],
                         boxShadow: [
                           BoxShadow(
-                              color: Color.fromRGBO(143, 148, 251, 0.5),
+                              color: Color.fromRGBO(0, 0, 0, 0.6),
                               blurRadius: 20,
                               offset: Offset(0, 10))
                         ]

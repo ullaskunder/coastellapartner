@@ -1,7 +1,13 @@
+import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:costellapartner/pages/vieworder.dart';
+import 'package:costellapartner/pages/home.dart';
+import 'package:costellapartner/pages/textorder.dart';
+import 'package:costellapartner/services/getneworders.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:costellapartner/pages/imageorder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderListPage extends StatefulWidget {
   @override
@@ -25,7 +31,125 @@ class _OrderListPageState extends State<OrderListPage> {
   @override
   void initState() {
     super.initState();
+    getSP();
   }
+
+  String shopId, phoneNumber;
+
+  Future getSP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      shopId = (prefs.getString('shopId') ?? '');
+      phoneNumber = (prefs.getString('phoneNumber') ?? '');
+      getNewOrders();
+      getAcceptedOrders();
+      getPackedOrders();
+    });
+  }
+
+  Map newOrdersData, acceptedOrdersData, packedOrdersData;
+  List newOrdersList, acceptedOrdersList, packedOrdersList;
+  int newOrderIndex = 0, acceptedOrderIndex = 0, packedOrderIndex = 0;
+
+  Future getNewOrders() async {
+    http.Response response = await http.post(
+        'http://coastella.in/coastellapartner/php/getNewOrders.php',
+        body: {'shopid': shopId});
+    if (response.body.toString() == 'no') {
+      newOrdersList = null;
+      newOrderIndex = 2;
+    } else {
+      newOrdersData = json.decode(response.body);
+      setState(() {
+        newOrdersList = newOrdersData['orders'];
+        newOrderIndex = 1;
+      });
+      print(newOrdersList.toString());
+    }
+  }
+
+  Future getAcceptedOrders() async {
+    http.Response response = await http.post(
+        'http://coastella.in/coastellapartner/php/getAcceptedOrders.php',
+        body: {'shopid': shopId});
+    if (response.body.toString() == 'no') {
+      acceptedOrdersList = null;
+      acceptedOrderIndex = 2;
+    } else {
+      acceptedOrdersData = json.decode(response.body);
+      setState(() {
+        acceptedOrdersList = acceptedOrdersData['orders'];
+        acceptedOrderIndex = 1;
+      });
+      print(acceptedOrdersList.toString());
+    }
+  }
+
+  Future getPackedOrders() async {
+    http.Response response = await http.post(
+        'http://coastella.in/coastellapartner/php/getPackedOrders.php',
+        body: {'shopid': shopId});
+    if (response.body.toString() == 'no') {
+      packedOrdersList = null;
+      packedOrderIndex = 2;
+    } else {
+      packedOrdersData = json.decode(response.body);
+      setState(() {
+        packedOrdersList = packedOrdersData['orders'];
+        packedOrderIndex = 1;
+      });
+      print(packedOrdersList.toString());
+    }
+  }
+
+  void errorMessage(String status) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.message),
+                title: Text('$status'),
+                //onTap: () => {Navigator.pop(context)},
+              ),
+              ListTile(
+                leading: Icon(Icons.cancel),
+                title: Text('Close'),
+                onTap: () => {
+                  Navigator.pop(context),
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => HomePage()))
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void payOrder(int index) async {
+    var url = 'http://coastella.in/coastellapartner/php/payOrder.php';
+    Map data = {"oid": packedOrdersList[index]['oid']};
+
+    var response = await http.post(url, body: data);
+    String status = response.body;
+    print(status);
+    if (response.statusCode == 200) {
+      if (status == 'success;') {
+        print('Payment succesfull');
+        errorMessage('Payment succesfull');
+      } else {
+        print('Failed to pay order! Try again');
+        errorMessage('Failed to pay order! Try again');
+      }
+    } else {
+      print('Failed to pay order! Try again');
+      errorMessage('Failed to pay order! Try again');
+    }
+  }
+
+  List<NewOrders> orders = List<NewOrders>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,83 +157,167 @@ class _OrderListPageState extends State<OrderListPage> {
     final width = MediaQuery.of(context).size.width;
     return MaterialApp(
         home: DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
-          backgroundColor: Colors.grey,
-          appBar: AppBar(
-            actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    if (this.customIcon.icon == Icons.search) {
-                      this.customIcon = Icon(Icons.cancel);
-                      this.customSearchBar = TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search',
-                            hintStyle: GoogleFonts.nunitoSans(
-                              color: Colors.white,
-                              letterSpacing: 2,
-                            )),
-                        style: GoogleFonts.nunitoSans(
-                          color: Colors.white,
-                        ),
-                      );
-                    } else {
-                      this.customIcon = Icon(
-                        Icons.search,
-                        size: 30,
-                      );
-                      this.customSearchBar = AutoSizeText(
-                        'COASTELLA',
-                        style: GoogleFonts.nunitoSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                      );
-                    }
-                  });
-                },
-                icon: customIcon,
+        backgroundColor: Colors.grey,
+        appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  if (this.customIcon.icon == Icons.search) {
+                    this.customIcon = Icon(Icons.cancel);
+                    this.customSearchBar = TextField(
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Search',
+                          hintStyle: GoogleFonts.nunitoSans(
+                            color: Colors.white,
+                            letterSpacing: 2,
+                          )),
+                      style: GoogleFonts.nunitoSans(
+                        color: Colors.white,
+                      ),
+                    );
+                  } else {
+                    this.customIcon = Icon(
+                      Icons.search,
+                      size: 30,
+                    );
+                    this.customSearchBar = AutoSizeText(
+                      'COASTELLA',
+                      style: GoogleFonts.nunitoSans(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                    );
+                  }
+                });
+              },
+              icon: customIcon,
+            ),
+          ],
+          backgroundColor: Colors.grey[800],
+          elevation: 0,
+          title: customSearchBar,
+          bottom: TabBar(
+            indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Color.fromRGBO(255, 255, 255, 0.2)),
+            tabs: <Widget>[
+              Tab(
+                text: 'NEW ORDERS',
+              ),
+              Tab(
+                text: 'ACCEPTED ORDERS',
+              ),
+              Tab(
+                text: 'PACKED ORDERS',
+              )
+            ],
+          ),
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(10),
+          child: TabBarView(
+            children: <Widget>[
+              IndexedStack(
+                index: newOrderIndex,
+                children: <Widget>[
+                  Container(
+                    height: height,
+                    width: width,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/loading.png'),
+                            fit: BoxFit.contain)),
+                  ),
+                  ListView.builder(
+                    itemBuilder: (context, index) {
+                      return newListItems(index);
+                    },
+                    itemCount: newOrdersList == null ? 0 : newOrdersList.length,
+                  ),
+                  Container(
+                    height: height,
+                    width: width,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/error.png'),
+                            fit: BoxFit.contain)),
+                  ),
+                ],
+              ),
+              IndexedStack(
+                index: acceptedOrderIndex,
+                children: <Widget>[
+                  Container(
+                    height: height,
+                    width: width,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/loading.png'),
+                            fit: BoxFit.contain)),
+                  ),
+
+                  ListView.builder(
+                    itemBuilder: (context, index) {
+                      return acceptedListItems(index);
+                    },
+                    itemCount: acceptedOrdersList == null
+                        ? 0
+                        : acceptedOrdersList.length,
+                  ),
+                  Container(
+                    height: height,
+                    width: width,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/error.png'),
+                            fit: BoxFit.contain)),
+                  ),
+                ],
+              ),
+              IndexedStack(
+                index: packedOrderIndex,
+                children: <Widget>[
+                  Container(
+                    height: height,
+                    width: width,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/loading.png'),
+                            fit: BoxFit.contain)),
+                  ),
+
+                  ListView.builder(
+                    itemBuilder: (context, index) {
+                      return packedListItems(index);
+                    },
+                    itemCount:
+                        packedOrdersList == null ? 0 : packedOrdersList.length,
+                  ),
+                  Container(
+                    height: height,
+                    width: width,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/error.png'),
+                            fit: BoxFit.contain)),
+                  ),
+                ],
               ),
             ],
-            backgroundColor: Colors.grey[800],
-            elevation: 0,
-            title: customSearchBar,
-            bottom: TabBar(
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: Color.fromRGBO(255, 255, 255, 0.2)),
-              tabs: <Widget>[
-                Tab(
-                  text: 'NEW ORDERS',
-                ),
-                Tab(
-                  text: 'PACKED ORDERS',
-                )
-              ],
-            ),
           ),
-          body: Padding(
-            padding: EdgeInsets.all(10),
-            child: TabBarView(
-              children: <Widget>[
-                ListView.builder(
-                  itemBuilder: (context, index) {
-                    return newListItems(index);
-                  },
-                  itemCount: 5,
-                ),
-                ListView.builder(
-                  itemBuilder: (context, index) {
-                    return packedListItems(index);
-                  },
-                  itemCount: 2,
-                ),
-              ],
-            ),
-          )),
+        ),
+      ),
     ));
   }
 
@@ -126,100 +334,140 @@ class _OrderListPageState extends State<OrderListPage> {
         child: Padding(
             padding: EdgeInsets.all(10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
                   children: <Widget>[
                     Expanded(
-                        flex: 2,
-                        child: Icon(
-                          Icons.shopping_cart,
-                          size: 60,
-                          color: Colors.grey[800],
-                        )),
+                      flex: 1,
+                      child: Icon(Icons.person,color: Colors.grey[800],),
+                    ),
                     Expanded(
-                      flex: 4,
-                      child: Padding(
-                        padding: EdgeInsets.all(2),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            AutoSizeText(
-                              'Buyer Name',
-                              style: GoogleFonts.nunitoSans(
-                                  letterSpacing: 2,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                            SizedBox(
-                              height: height * 0.01,
-                            ),
-                            AutoSizeText(
-                              'Order ID',
-                              style: GoogleFonts.nunitoSans(
-                                letterSpacing: 2,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            SizedBox(
-                              height: height * 0.01,
-                            ),
-                            AutoSizeText(
-                              'Carry Bag Needed',
-                              style: GoogleFonts.nunitoSans(
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                            SizedBox(
-                              height: height * 0.01,
-                            ),
-                            AutoSizeText(
-                              'PickUp Time : 5:45 PM',
-                              style: GoogleFonts.nunitoSans(
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                            SizedBox(
-                              height: height * 0.01,
-                            ),
-                          ],
+                      flex: 8,
+                      child: AutoSizeText(
+                        newOrdersList[index]['name'],
+                        style: GoogleFonts.nunitoSans(
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.credit_card,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child:     AutoSizeText(
+                        'OrderID : ' + newOrdersList[index]['oid'],
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: Colors.grey,
                         ),
                       ),
                     ),
                   ],
                 ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      height: height * 0.05,
-                      width: width * 0.24,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.grey[800],
-                      ),
-                      child: Center(
-                        child: AutoSizeText(
-                          'CALL',
-                          style: GoogleFonts.nunitoSans(
-                            letterSpacing: 1,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.card_travel,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'CarryBag : ' +
+                            (newOrdersList[index]['isCarryBag'] == '1' ? 'Yes' : 'No'),
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: width * 0.02,
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.check_box_outline_blank,color: Colors.grey[800],),
                     ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'CartonBox : ' +
+                            (newOrdersList[index]['isCartonBox'] == '1' ? 'Yes' : 'No'),
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.timelapse,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'Pickup Time : ' + newOrdersList[index]['userPickupTime'],
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        //Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => AudioApp()));
+                        if (newOrdersList[index]['orderType'] == 'text') {
+                          print('yes');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  TextOrder(index, newOrdersList)));
+                        } else {
+                          print('no');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ImageOrder(index, newOrdersList)));
+                        }
                       },
                       child: Container(
                         height: height * 0.05,
@@ -240,23 +488,177 @@ class _OrderListPageState extends State<OrderListPage> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: width * 0.02,
+                  ],
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+
+  acceptedListItems(index) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: EdgeInsets.all(6),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 255, 255, 0.8),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.person,color: Colors.grey[800],),
                     ),
-                    Container(
-                      height: height * 0.05,
-                      width: width * 0.24,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.grey[800],
-                      ),
-                      child: Center(
-                        child: AutoSizeText(
-                          'PACKED',
-                          style: GoogleFonts.nunitoSans(
-                            letterSpacing: 1,
-                            color: Colors.white,
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        acceptedOrdersList[index]['name'],
+                        style: GoogleFonts.nunitoSans(
+                            letterSpacing: 2,
                             fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.credit_card,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child:     AutoSizeText(
+                        'OrderID : ' + acceptedOrdersList[index]['oid'],
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.card_travel,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'CarryBag : ' +
+                            (acceptedOrdersList[index]['isCarryBag'] == '1' ? 'Yes' : 'No'),
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.check_box_outline_blank,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'CartonBox : ' +
+                            (acceptedOrdersList[index]['isCartonBox'] == '1' ? 'Yes' : 'No'),
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(Icons.timelapse,color: Colors.grey[800],),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'Pickup Time : ' + acceptedOrdersList[index]['userPickupTime'],
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        if (acceptedOrdersList[index]['orderType'] == 'text') {
+                          print('yes');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  TextOrder(index, acceptedOrdersList)));
+                        } else {
+                          print('no');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ImageOrder(index, acceptedOrdersList)));
+                        }
+                      },
+                      child: Container(
+                        height: height * 0.05,
+                        width: width * 0.24,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.grey[800],
+                        ),
+                        child: Center(
+                          child: AutoSizeText(
+                            'VIEW',
+                            style: GoogleFonts.nunitoSans(
+                              letterSpacing: 1,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -284,11 +686,12 @@ class _OrderListPageState extends State<OrderListPage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  flex: 2,
-                  child: Icon(Icons.shopping_cart,
-                  color: Colors.grey[800],
-                  size: width*0.16,)
-                ),
+                    flex: 2,
+                    child: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.grey[800],
+                      size: width * 0.16,
+                    )),
                 Expanded(
                   flex: 4,
                   child: Padding(
@@ -297,7 +700,7 @@ class _OrderListPageState extends State<OrderListPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         AutoSizeText(
-                          'Buyer Name',
+                          packedOrdersList[index]['name'],
                           style: GoogleFonts.nunitoSans(
                               letterSpacing: 2,
                               fontWeight: FontWeight.bold,
@@ -307,7 +710,7 @@ class _OrderListPageState extends State<OrderListPage> {
                           height: height * 0.01,
                         ),
                         AutoSizeText(
-                          'Order ID',
+                          'Order ID : ' + packedOrdersList[index]['oid'],
                           style: GoogleFonts.nunitoSans(
                             letterSpacing: 2,
                             fontWeight: FontWeight.bold,
@@ -319,7 +722,7 @@ class _OrderListPageState extends State<OrderListPage> {
                           height: height * 0.01,
                         ),
                         AutoSizeText(
-                          'Packed',
+                          'Status : Packed',
                           style: GoogleFonts.nunitoSans(
                             letterSpacing: 1,
                             fontWeight: FontWeight.bold,
@@ -332,20 +735,25 @@ class _OrderListPageState extends State<OrderListPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            Container(
-                              height: height * 0.05,
-                              width: width * 0.24,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.grey[800],
-                              ),
-                              child: Center(
-                                child: AutoSizeText(
-                                  'PAID',
-                                  style: GoogleFonts.nunitoSans(
-                                    letterSpacing: 1,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                            GestureDetector(
+                              onTap: () {
+                                payOrder(index);
+                              },
+                              child: Container(
+                                height: height * 0.05,
+                                width: width * 0.24,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.grey[800],
+                                ),
+                                child: Center(
+                                  child: AutoSizeText(
+                                    'PAID',
+                                    style: GoogleFonts.nunitoSans(
+                                      letterSpacing: 1,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
