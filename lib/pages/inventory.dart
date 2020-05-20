@@ -28,7 +28,7 @@ class _InventoryPageState extends State<InventoryPage> {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
@@ -38,7 +38,8 @@ class _InventoryPageState extends State<InventoryPage> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => SupportPage()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => SupportPage()));
                       },
                       child: Container(
                         height: height * 0.2,
@@ -48,19 +49,20 @@ class _InventoryPageState extends State<InventoryPage> {
                                 bottomLeft: Radius.circular(60)),
                             color: Color.fromRGBO(255, 255, 255, 0.6)),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Center(
                                 child: Icon(
-                              Icons.call,
+                              Icons.live_help,
                               color: Colors.grey[800],
                               size: height * 0.1,
                             )),
                             AutoSizeText(
-                              'SUPPOT',
+                              'HELP',
                               style: GoogleFonts.nunitoSans(
                                 color: Colors.grey[800],
                                 letterSpacing: 1,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -72,7 +74,8 @@ class _InventoryPageState extends State<InventoryPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => FeedBackPage()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => FeedBackPage()));
                       },
                       child: Container(
                         height: height * 0.2,
@@ -82,11 +85,11 @@ class _InventoryPageState extends State<InventoryPage> {
                                 bottomRight: Radius.circular(60)),
                             color: Color.fromRGBO(255, 255, 255, 0.6)),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Center(
                                 child: Icon(
-                              Icons.feedback,
+                              Icons.library_books,
                               color: Colors.grey[800],
                               size: height * 0.1,
                             )),
@@ -95,6 +98,7 @@ class _InventoryPageState extends State<InventoryPage> {
                               style: GoogleFonts.nunitoSans(
                                 color: Colors.grey[800],
                                 letterSpacing: 1,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -111,7 +115,8 @@ class _InventoryPageState extends State<InventoryPage> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        loadURL('mailto:service@coastella.in?subject=Contact Mail&body=Hey Developers.');
+                        loadURL(
+                            'mailto:service@coastella.in?subject=Contact Mail&body=Hey Developers.');
                       },
                       child: Container(
                         height: height * 0.2,
@@ -121,19 +126,20 @@ class _InventoryPageState extends State<InventoryPage> {
                                 BorderRadius.only(topLeft: Radius.circular(60)),
                             color: Color.fromRGBO(255, 255, 255, 0.6)),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Center(
                                 child: Icon(
-                              Icons.contact_mail,
+                              Icons.mail,
                               color: Colors.grey[800],
                               size: height * 0.1,
                             )),
                             AutoSizeText(
-                              'CONTACT',
+                              'E-MAIL',
                               style: GoogleFonts.nunitoSans(
                                 color: Colors.grey[800],
                                 letterSpacing: 1,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -144,30 +150,33 @@ class _InventoryPageState extends State<InventoryPage> {
                       width: width * 0.04,
                     ),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TeamPage()));
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => TeamPage()));
                       },
                       child: Container(
                         height: height * 0.2,
                         width: width * 0.42,
                         decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.only(topRight: Radius.circular(60)),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(60)),
                             color: Color.fromRGBO(255, 255, 255, 0.6)),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Center(
                                 child: Icon(
-                              Icons.developer_board,
+                              Icons.group,
                               color: Colors.grey[800],
                               size: height * 0.1,
                             )),
+
                             AutoSizeText(
                               'TEAM',
                               style: GoogleFonts.nunitoSans(
                                 color: Colors.grey[800],
                                 letterSpacing: 1,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -182,46 +191,43 @@ class _InventoryPageState extends State<InventoryPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  Share.share('check out my website http://coastella.in', subject: 'Look what I made!');
+                  Share.share('check out my website http://coastella.in',
+                      subject: 'Look what I made!');
                 },
                 child: Container(
                   width: width * 0.9,
                   height: height * 0.12,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(100),
-                          bottomRight: Radius.circular(100)),
+                      borderRadius: BorderRadius.circular(60),
                       color: Color.fromRGBO(255, 255, 255, 0.6)),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          flex: 4,
-                          child: AutoSizeText(
-                            'Share',
+                       AutoSizeText(
+                            'Share ',
                             style: GoogleFonts.nunitoSans(
                               fontSize: 20,
                               color: Colors.grey[800],
                               letterSpacing: 2,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Icon(
+
+                     Icon(
                             Icons.share,
                             color: Colors.grey[800],
                             size: 28,
                           ),
-                        ),
+
                       ],
                     ),
                   ),
                 ),
               ),
               SizedBox(
-                height: height * 0.02,
+                height: height * 0.026,
               ),
               GestureDetector(
                 onTap: () {
@@ -231,32 +237,26 @@ class _InventoryPageState extends State<InventoryPage> {
                   width: width * 0.9,
                   height: height * 0.12,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(100),
-                          bottomRight: Radius.circular(100)),
+                      borderRadius: BorderRadius.circular(60),
                       color: Color.fromRGBO(255, 255, 255, 0.6)),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          flex: 4,
-                          child: AutoSizeText(
-                            'Website',
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 20,
-                              color: Colors.grey[800],
-                              letterSpacing: 2,
-                            ),
+                        AutoSizeText(
+                          'Website ',
+                          style: GoogleFonts.nunitoSans(
+                            fontSize: 20,
+                            color: Colors.grey[800],
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: Icon(
-                            Icons.web,
-                            color: Colors.grey[800],
-                            size: 28,
-                          ),
+                        Icon(
+                          Icons.web,
+                          color: Colors.grey[800],
+                          size: 28,
                         ),
                       ],
                     ),

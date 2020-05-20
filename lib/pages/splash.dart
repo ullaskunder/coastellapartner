@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:costellapartner/pages/home.dart';
 import 'package:costellapartner/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -95,39 +95,37 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[800],
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-              ),
-            ),
-            Shimmer.fromColors(
+        child: Shimmer.fromColors(
                 child: Container(
                   padding: EdgeInsets.all(50),
-                  child: Text(
-                    'Costella',
-                    style: GoogleFonts.nunitoSans(
-                      fontSize: 40,
-                      letterSpacing: 2,
-                      /* shadows: <Shadow>[
-                        Shadow(
-                          blurRadius: 18,
-                          color: Colors.black87,
-                          offset: Offset.fromDirection(120,10)
-                        )
-                      ]*/
-                    ),
+                  child:Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      AutoSizeText('COASTELLA',
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40,
+                        ),
+                      ),
+                      AutoSizeText('PARTNER',
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 baseColor: Colors.grey[800],
-                highlightColor: Colors.white)
-          ],
-        ),
+                highlightColor: Colors.white),
+
       ),
     );
   }

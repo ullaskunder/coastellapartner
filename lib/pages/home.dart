@@ -5,7 +5,6 @@ import 'package:costellapartner/pages/inventory.dart';
 import 'package:costellapartner/pages/orderlist.dart';
 import 'package:costellapartner/pages/profile.dart';
 import 'package:flutter/services.dart';
-import 'package:loading_animations/loading_animations.dart';
 
 
 class HomePage extends StatefulWidget {

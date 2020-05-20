@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedBackPage extends StatefulWidget {
   @override
@@ -14,10 +15,26 @@ class _FeedBackPageState extends State<FeedBackPage> {
   TextEditingController subject = new TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    getSP();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     title.dispose();
     subject.dispose();
+  }
+
+  String shopId;
+
+  Future getSP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      shopId = (prefs.getString('shopId') ?? '');
+    });
+    print('Shop Id : ' + shopId);
   }
 
   void submitFeedback() async {
@@ -25,7 +42,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
     String feedbackSubject = subject.text;
 
     var url = 'http://coastella.in/coastellapartner/php/feedback.php';
-    Map data = {"title": feedbackTitle, "subject": feedbackSubject};
+    Map data = {"title": feedbackTitle, "subject": feedbackSubject,"shopid":shopId};
 
     var response = await http.post(url, body: data);
     String status = response.body;

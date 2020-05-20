@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:costellapartner/pages/home.dart';
 import 'package:costellapartner/pages/textorder.dart';
-import 'package:costellapartner/services/getneworders.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -15,18 +14,7 @@ class OrderListPage extends StatefulWidget {
 }
 
 class _OrderListPageState extends State<OrderListPage> {
-  Icon customIcon = Icon(
-    Icons.search,
-    size: 30,
-  );
-  Widget customSearchBar = AutoSizeText(
-    'COASTELLA',
-    style: GoogleFonts.nunitoSans(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 2,
-    ),
-  );
+
 
   @override
   void initState() {
@@ -57,7 +45,6 @@ class _OrderListPageState extends State<OrderListPage> {
         body: {'shopid': shopId});
     if (response.body.toString() == 'no') {
       newOrdersList = null;
-      newOrderIndex = 2;
     } else {
       newOrdersData = json.decode(response.body);
       setState(() {
@@ -74,7 +61,6 @@ class _OrderListPageState extends State<OrderListPage> {
         body: {'shopid': shopId});
     if (response.body.toString() == 'no') {
       acceptedOrdersList = null;
-      acceptedOrderIndex = 2;
     } else {
       acceptedOrdersData = json.decode(response.body);
       setState(() {
@@ -91,7 +77,6 @@ class _OrderListPageState extends State<OrderListPage> {
         body: {'shopid': shopId});
     if (response.body.toString() == 'no') {
       packedOrdersList = null;
-      packedOrderIndex = 2;
     } else {
       packedOrdersData = json.decode(response.body);
       setState(() {
@@ -120,7 +105,8 @@ class _OrderListPageState extends State<OrderListPage> {
                 title: Text('Close'),
                 onTap: () => {
                   Navigator.pop(context),
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => HomePage()))
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => HomePage()))
                 },
               )
             ],
@@ -149,8 +135,6 @@ class _OrderListPageState extends State<OrderListPage> {
     }
   }
 
-  List<NewOrders> orders = List<NewOrders>();
-
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -158,163 +142,101 @@ class _OrderListPageState extends State<OrderListPage> {
     return MaterialApp(
         home: DefaultTabController(
       length: 3,
-      child: Scaffold(
-        backgroundColor: Colors.grey,
-        appBar: AppBar(
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  if (this.customIcon.icon == Icons.search) {
-                    this.customIcon = Icon(Icons.cancel);
-                    this.customSearchBar = TextField(
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Search',
-                          hintStyle: GoogleFonts.nunitoSans(
-                            color: Colors.white,
-                            letterSpacing: 2,
-                          )),
-                      style: GoogleFonts.nunitoSans(
-                        color: Colors.white,
-                      ),
-                    );
-                  } else {
-                    this.customIcon = Icon(
-                      Icons.search,
-                      size: 30,
-                    );
-                    this.customSearchBar = AutoSizeText(
-                      'COASTELLA',
-                      style: GoogleFonts.nunitoSans(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
-                      ),
-                    );
-                  }
-                });
-              },
-              icon: customIcon,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.grey,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: Container(
+              color: Colors.grey[800],
+              child: TabBar(
+                isScrollable: true,
+                  indicator: BoxDecoration(
+                      color: Color.fromRGBO(255, 255, 255, 0.2)),
+                  tabs: <Widget>[
+                    Tab(
+                      text: 'NEW ORDERS',
+                    ),
+                    Tab(
+                      text: 'ACCEPTED ORDERS',
+                    ),
+                    Tab(
+                      text: 'PACKED ORDERS',
+                    )
+                  ],
+                ),
             ),
-          ],
-          backgroundColor: Colors.grey[800],
-          elevation: 0,
-          title: customSearchBar,
-          bottom: TabBar(
-            indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Color.fromRGBO(255, 255, 255, 0.2)),
-            tabs: <Widget>[
-              Tab(
-                text: 'NEW ORDERS',
-              ),
-              Tab(
-                text: 'ACCEPTED ORDERS',
-              ),
-              Tab(
-                text: 'PACKED ORDERS',
-              )
-            ],
           ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(10),
-          child: TabBarView(
-            children: <Widget>[
-              IndexedStack(
-                index: newOrderIndex,
-                children: <Widget>[
-                  Container(
-                    height: height,
-                    width: width,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/loading.png'),
-                            fit: BoxFit.contain)),
-                  ),
-                  ListView.builder(
-                    itemBuilder: (context, index) {
-                      return newListItems(index);
-                    },
-                    itemCount: newOrdersList == null ? 0 : newOrdersList.length,
-                  ),
-                  Container(
-                    height: height,
-                    width: width,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/error.png'),
-                            fit: BoxFit.contain)),
-                  ),
-                ],
-              ),
-              IndexedStack(
-                index: acceptedOrderIndex,
-                children: <Widget>[
-                  Container(
-                    height: height,
-                    width: width,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/loading.png'),
-                            fit: BoxFit.contain)),
-                  ),
 
-                  ListView.builder(
-                    itemBuilder: (context, index) {
-                      return acceptedListItems(index);
-                    },
-                    itemCount: acceptedOrdersList == null
-                        ? 0
-                        : acceptedOrdersList.length,
-                  ),
-                  Container(
-                    height: height,
-                    width: width,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/error.png'),
-                            fit: BoxFit.contain)),
-                  ),
-                ],
-              ),
-              IndexedStack(
-                index: packedOrderIndex,
-                children: <Widget>[
-                  Container(
-                    height: height,
-                    width: width,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/loading.png'),
-                            fit: BoxFit.contain)),
-                  ),
-
-                  ListView.builder(
-                    itemBuilder: (context, index) {
-                      return packedListItems(index);
-                    },
-                    itemCount:
-                        packedOrdersList == null ? 0 : packedOrdersList.length,
-                  ),
-                  Container(
-                    height: height,
-                    width: width,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/error.png'),
-                            fit: BoxFit.contain)),
-                  ),
-                ],
-              ),
-            ],
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 5, 10),
+            child: TabBarView(
+              children: <Widget>[
+                IndexedStack(
+                  index: newOrderIndex,
+                  children: <Widget>[
+                    Container(
+                      height: height,
+                      width: width,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/error.png'),
+                              fit: BoxFit.contain)),
+                    ),
+                    ListView.builder(
+                      itemBuilder: (context, index) {
+                        return newListItems(index);
+                      },
+                      itemCount: newOrdersList == null ? 0 : newOrdersList.length,
+                    ),
+                  ],
+                ),
+                IndexedStack(
+                  index: acceptedOrderIndex,
+                  children: <Widget>[
+                    Container(
+                      height: height,
+                      width: width,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/error.png'),
+                              fit: BoxFit.contain)),
+                    ),
+                    ListView.builder(
+                      itemBuilder: (context, index) {
+                        return acceptedListItems(index);
+                      },
+                      itemCount: acceptedOrdersList == null
+                          ? 0
+                          : acceptedOrdersList.length,
+                    ),
+                  ],
+                ),
+                IndexedStack(
+                  index: packedOrderIndex,
+                  children: <Widget>[
+                    Container(
+                      height: height,
+                      width: width,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/error.png'),
+                              fit: BoxFit.contain)),
+                    ),
+                    ListView.builder(
+                      itemBuilder: (context, index) {
+                        return packedListItems(index);
+                      },
+                      itemCount:
+                          packedOrdersList == null ? 0 : packedOrdersList.length,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -329,7 +251,7 @@ class _OrderListPageState extends State<OrderListPage> {
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.8),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
             padding: EdgeInsets.all(10),
@@ -340,7 +262,10 @@ class _OrderListPageState extends State<OrderListPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.person,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
@@ -361,11 +286,14 @@ class _OrderListPageState extends State<OrderListPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.credit_card,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.credit_card,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
-                      child:     AutoSizeText(
+                      child: AutoSizeText(
                         'OrderID : ' + newOrdersList[index]['oid'],
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 2,
@@ -377,21 +305,25 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
-                Row(
+                /*Row(
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.card_travel,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.card_travel,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
                       child: AutoSizeText(
                         'CarryBag : ' +
-                            (newOrdersList[index]['isCarryBag'] == '1' ? 'Yes' : 'No'),
+                            (newOrdersList[index]['isCarryBag'] == '1'
+                                ? 'Yes'
+                                : 'No'),
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
@@ -401,7 +333,6 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
@@ -409,13 +340,18 @@ class _OrderListPageState extends State<OrderListPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.check_box_outline_blank,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.check_box_outline_blank,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
                       child: AutoSizeText(
                         'CartonBox : ' +
-                            (newOrdersList[index]['isCartonBox'] == '1' ? 'Yes' : 'No'),
+                            (newOrdersList[index]['isCartonBox'] == '1'
+                                ? 'Yes'
+                                : 'No'),
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
@@ -425,20 +361,23 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
-                ),
+                ),*/
                 Row(
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.timelapse,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.timelapse,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
                       child: AutoSizeText(
-                        'Pickup Time : ' + newOrdersList[index]['userPickupTime'],
+                        'Pickup Time : ' +
+                            newOrdersList[index]['userPickupTime'],
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
@@ -448,7 +387,6 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
@@ -504,7 +442,7 @@ class _OrderListPageState extends State<OrderListPage> {
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.8),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
             padding: EdgeInsets.all(10),
@@ -515,7 +453,10 @@ class _OrderListPageState extends State<OrderListPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.person,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
@@ -536,11 +477,14 @@ class _OrderListPageState extends State<OrderListPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.credit_card,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.credit_card,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
-                      child:     AutoSizeText(
+                      child: AutoSizeText(
                         'OrderID : ' + acceptedOrdersList[index]['oid'],
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 2,
@@ -552,21 +496,25 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
-                Row(
+                /*Row(
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.card_travel,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.card_travel,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
                       child: AutoSizeText(
                         'CarryBag : ' +
-                            (acceptedOrdersList[index]['isCarryBag'] == '1' ? 'Yes' : 'No'),
+                            (acceptedOrdersList[index]['isCarryBag'] == '1'
+                                ? 'Yes'
+                                : 'No'),
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
@@ -576,7 +524,6 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
@@ -584,13 +531,18 @@ class _OrderListPageState extends State<OrderListPage> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.check_box_outline_blank,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.check_box_outline_blank,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
                       child: AutoSizeText(
                         'CartonBox : ' +
-                            (acceptedOrdersList[index]['isCartonBox'] == '1' ? 'Yes' : 'No'),
+                            (acceptedOrdersList[index]['isCartonBox'] == '1'
+                                ? 'Yes'
+                                : 'No'),
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
@@ -600,20 +552,23 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
-                ),
+                ),*/
                 Row(
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Icon(Icons.timelapse,color: Colors.grey[800],),
+                      child: Icon(
+                        Icons.timelapse,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     Expanded(
                       flex: 8,
                       child: AutoSizeText(
-                        'Pickup Time : ' + acceptedOrdersList[index]['userPickupTime'],
+                        'Pickup Time : ' +
+                            acceptedOrdersList[index]['userPickupTime'],
                         style: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
@@ -623,7 +578,6 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
@@ -679,90 +633,173 @@ class _OrderListPageState extends State<OrderListPage> {
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.8),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
             padding: EdgeInsets.all(10),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                    flex: 2,
-                    child: Icon(
-                      Icons.shopping_cart,
-                      color: Colors.grey[800],
-                      size: width * 0.16,
-                    )),
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: EdgeInsets.all(2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        AutoSizeText(
-                          packedOrdersList[index]['name'],
-                          style: GoogleFonts.nunitoSans(
-                              letterSpacing: 2,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                        SizedBox(
-                          height: height * 0.01,
-                        ),
-                        AutoSizeText(
-                          'Order ID : ' + packedOrdersList[index]['oid'],
-                          style: GoogleFonts.nunitoSans(
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        packedOrdersList[index]['name'],
+                        style: GoogleFonts.nunitoSans(
                             letterSpacing: 2,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        SizedBox(
-                          height: height * 0.01,
-                        ),
-                        AutoSizeText(
-                          'Status : Packed',
-                          style: GoogleFonts.nunitoSans(
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                          ),
-                        ),
-                        SizedBox(
-                          height: height * 0.01,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                payOrder(index);
-                              },
-                              child: Container(
-                                height: height * 0.05,
-                                width: width * 0.24,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.grey[800],
-                                ),
-                                child: Center(
-                                  child: AutoSizeText(
-                                    'PAID',
-                                    style: GoogleFonts.nunitoSans(
-                                      letterSpacing: 1,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            fontSize: 16),
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(
+                        Icons.credit_card,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'OrderID : ' + packedOrdersList[index]['oid'],
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                /*Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(
+                        Icons.card_travel,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'CarryBag : ' +
+                            (acceptedOrdersList[index]['isCarryBag'] == '1'
+                                ? 'Yes'
+                                : 'No'),
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(
+                        Icons.check_box_outline_blank,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'CartonBox : ' +
+                            (acceptedOrdersList[index]['isCartonBox'] == '1'
+                                ? 'Yes'
+                                : 'No'),
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),*/
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Icon(
+                        Icons.timelapse,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: AutoSizeText(
+                        'Pickup Time : ' +
+                            packedOrdersList[index]['userPickupTime'],
+                        style: GoogleFonts.nunitoSans(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        print('paid');
+                        payOrder(index);
+                        },
+                      child: Container(
+                        height: height * 0.05,
+                        width: width * 0.24,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.grey[800],
+                        ),
+                        child: Center(
+                          child: AutoSizeText(
+                            'PAID',
+                            style: GoogleFonts.nunitoSans(
+                              letterSpacing: 1,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             )),

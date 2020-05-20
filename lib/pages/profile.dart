@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +5,7 @@ import 'package:costellapartner/pages/login.dart';
 import 'package:costellapartner/pages/profiledetail.dart';
 import 'package:costellapartner/pages/orderhistory.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -89,21 +85,29 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: height * 0.08,
+                    height: height * 0.06,
                   ),
-                  CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/costella.png'),
-                    radius: width * 0.18,
+              Container(
+                height: height*0.26,
+                width: width*0.4,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/icon_circular.png'),
+                    fit: BoxFit.contain
                   ),
+                ),
+              ),
                   SizedBox(
-                    height: height * 0.01,
+                    height: height * 0.02,
                   ),
                   AutoSizeText(
                     'Coastella - Partner',
                     style: GoogleFonts.nunitoSans(
                         fontSize: 32,
                         color: Colors.grey[800],
-                        letterSpacing: 2),
+                        letterSpacing: 2,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.06,

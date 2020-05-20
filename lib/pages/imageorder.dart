@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:costellapartner/pages/home.dart';
-import 'package:costellapartner/pages/orderlist.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -118,7 +117,7 @@ class _ImageOrderState extends State<ImageOrder> {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.fromLTRB(10,10,10,40),
           child: Column(
             children: <Widget>[
               CachedNetworkImage(
@@ -135,7 +134,7 @@ class _ImageOrderState extends State<ImageOrder> {
                 width: width,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
                         color: Color.fromRGBO(0, 0, 0, 0.5),

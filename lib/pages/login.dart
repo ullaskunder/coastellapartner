@@ -9,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:http/http.dart' as http;
-import 'package:costellapartner/services/getshopdetails.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -34,7 +33,7 @@ class _LoginState extends State<LoginPage> {
   final RoundedLoadingButtonController loginButton =
       new RoundedLoadingButtonController();
 
-  var shopData = List<ShopDetails>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +65,25 @@ class _LoginState extends State<LoginPage> {
                       ),
                       Positioned(
                         top: height * 0.2,
-                        left: width * 0.14,
-                        child: AutoSizeText(
-                          'Coastella',
-                          style: GoogleFonts.nunitoSans(
-                              letterSpacing: 4,
-                              color: Colors.white,
-                              fontSize: 64),
-                        ),
+                        left: width * 0.2,
+                        child: Column(
+                          children: <Widget>[
+                            AutoSizeText(
+                              'COASTELLA',
+                              style: GoogleFonts.nunitoSans(
+                                  letterSpacing: 4,
+                                  color: Colors.white,
+                                  fontSize: 40),
+                            ),
+                            AutoSizeText(
+                              'PARTNER',
+                              style: GoogleFonts.nunitoSans(
+                                  letterSpacing: 4,
+                                  color: Colors.white,
+                                  fontSize: 28),
+                            ),
+                          ],
+                        )
                       ),
                     ],
                   ),
