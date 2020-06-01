@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lottie/lottie.dart';
 
 class FeedBackPage extends StatefulWidget {
   @override
@@ -11,7 +12,6 @@ class FeedBackPage extends StatefulWidget {
 }
 
 class _FeedBackPageState extends State<FeedBackPage> {
-  TextEditingController title = new TextEditingController();
   TextEditingController subject = new TextEditingController();
 
   @override
@@ -23,7 +23,6 @@ class _FeedBackPageState extends State<FeedBackPage> {
   @override
   void dispose() {
     super.dispose();
-    title.dispose();
     subject.dispose();
   }
 
@@ -38,11 +37,10 @@ class _FeedBackPageState extends State<FeedBackPage> {
   }
 
   void submitFeedback() async {
-    String feedbackTitle = title.text;
     String feedbackSubject = subject.text;
 
     var url = 'http://coastella.in/coastellapartner/php/feedback.php';
-    Map data = {"title": feedbackTitle, "subject": feedbackSubject,"shopid":shopId};
+    Map data = {"title": 'Shop Feedback', "subject": feedbackSubject,"shopid":shopId};
 
     var response = await http.post(url, body: data);
     String status = response.body;
@@ -92,7 +90,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.blueGrey[900],
       appBar: AppBar(
         title: Text('Feedback',
         style: GoogleFonts.nunitoSans(
@@ -100,7 +98,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
           color: Colors.white,
         ),),
         elevation: 0,
-          backgroundColor: Colors.grey[800],
+          backgroundColor: Colors.blueGrey[900],
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -108,44 +106,20 @@ class _FeedBackPageState extends State<FeedBackPage> {
           padding: EdgeInsets.all(10),
           child: Column(
             children: <Widget>[
-             Container(
-               width: width,
-               height: height*0.1,
-               decoration: BoxDecoration(
-                 borderRadius: BorderRadius.circular(10),
-                 color: Colors.white,
-                 boxShadow: [
-                   BoxShadow(
-                       color: Color.fromRGBO(0, 0, 0, 0.6),
-                       blurRadius: 20,
-                       offset: Offset(0, 10))
-                 ]
-               ),
-               child: Padding(
-                 padding: EdgeInsets.all(10),
-                 child: TextField(
-                   controller: title,
-                   style: GoogleFonts.nunitoSans(
-                     letterSpacing: 1,
-                   ),
-                   decoration: InputDecoration(
-                     border: InputBorder.none,
-                     hintText: 'Title',
-                     hintStyle: GoogleFonts.nunitoSans(
-                       letterSpacing: 1,
-                       color: Colors.grey,
-                     )
-                   ),
-                   maxLines: 1,
-                 ),
-               ),
-             ),
-              SizedBox(height: height*0.02,),
+              Container(
+                width: width,
+                height: height*0.3,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/feedback.png'),
+                    fit: BoxFit.contain,
+                  )
+                ),
+              ),
               Container(
                 width: width,
                 height: height*0.6,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
@@ -163,7 +137,7 @@ class _FeedBackPageState extends State<FeedBackPage> {
                     ),
                     decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Subject',
+                        hintText: 'Message',
                         hintStyle: GoogleFonts.nunitoSans(
                           letterSpacing: 1,
                           color: Colors.grey,
@@ -174,25 +148,15 @@ class _FeedBackPageState extends State<FeedBackPage> {
                 ),
               ),
               SizedBox(height: height*0.02,),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20,0,20,10),
-                child: GestureDetector(
+              GestureDetector(
                   onTap: (){
                     submitFeedback();
                     print('Submit');
                     },
                   child: Container(
                     height: height*0.1,
-                    width: width*0.5,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.grey[800],
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.6),
-                              blurRadius: 20,
-                              offset: Offset(0, 10))
-                        ]
+                        color: Colors.green[800],
                     ),
                     child: Center(
                       child: AutoSizeText(
@@ -206,7 +170,6 @@ class _FeedBackPageState extends State<FeedBackPage> {
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

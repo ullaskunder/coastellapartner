@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,7 +46,7 @@ class _SupportPageState extends State<SupportPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.blueGrey[900],
       appBar: AppBar(
         title: Text('Support',
         style: GoogleFonts.nunitoSans(
@@ -52,7 +54,7 @@ class _SupportPageState extends State<SupportPage> {
           color: Colors.white,
         ),),
         elevation: 0,
-        backgroundColor: Colors.grey[800],
+        backgroundColor: Colors.blueGrey[900],
       ),
       body: Padding(
         padding: EdgeInsets.all(4),
@@ -63,18 +65,35 @@ class _SupportPageState extends State<SupportPage> {
               height: height,
               width: width,
               decoration: BoxDecoration(
-                  color: Colors.grey,
+                  color: Colors.blueGrey[900],
                   image: DecorationImage(
                       image: AssetImage('assets/images/loading.png'),
                       fit: BoxFit.contain)),
             ),
-            ListView.builder(
-              itemBuilder: (context,index)
-              {
-                return support(index);
-              },
-              itemCount: supportList == null ? 0 : supportList.length,
-            ),
+           Column(
+             children: <Widget>[
+               Container(
+                 height: height*0.3,
+                 width: width,
+                 decoration: BoxDecoration(
+                   image: DecorationImage(
+                     image: AssetImage('assets/images/support.png'),
+                     fit: BoxFit.contain,
+                   ),
+                 ),
+               ),
+               SizedBox(height: height * 0.02,),
+               Expanded(
+                 child: ListView.builder(
+                   itemBuilder: (context,index)
+                   {
+                     return support(index);
+                   },
+                   itemCount: supportList == null ? 0 : supportList.length,
+                 ),
+               ),
+             ],
+           ),
           ],
         )
       ),
@@ -89,8 +108,7 @@ class _SupportPageState extends State<SupportPage> {
       padding: EdgeInsets.all(6),
       child: Container(
         decoration: BoxDecoration(
-          color: Color.fromRGBO(255, 255, 255, 0.8),
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
         ),
         child: Padding(
             padding: EdgeInsets.all(10),
@@ -98,19 +116,24 @@ class _SupportPageState extends State<SupportPage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Expanded(
-                        flex: 2,
-                        child: Icon(Icons.person,size: width*0.2,color: Colors.grey[800],)
+                   Expanded(
+                          flex: 2,
+                            child: CircleAvatar(
+                              backgroundImage: CachedNetworkImageProvider(supportList[index]['image']),
+                              radius: 50,
+                              backgroundColor: Colors.blueGrey[900],
+                            ),
+
                     ),
                     Expanded(
                       flex: 4,
                       child: Padding(
-                        padding: EdgeInsets.all(2),
+                        padding: EdgeInsets.all(4),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             AutoSizeText(
-                              supportList[index]['name'],
+                              ' ' + supportList[index]['name'],
                               style: GoogleFonts.nunitoSans(
                                   letterSpacing: 2,
                                   fontWeight: FontWeight.bold,
@@ -119,7 +142,7 @@ class _SupportPageState extends State<SupportPage> {
                             ),
                             SizedBox(height: height*0.01,),
                             AutoSizeText(
-                              supportList[index]['designation'],
+                              ' ' + supportList[index]['designation'],
                               style: GoogleFonts.nunitoSans(
                                 letterSpacing: 2,
                                 fontWeight: FontWeight.bold,
@@ -129,7 +152,7 @@ class _SupportPageState extends State<SupportPage> {
                             ),
                             SizedBox(height: height*0.02,),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 IconButton(
                                   onPressed: () {
@@ -137,27 +160,36 @@ class _SupportPageState extends State<SupportPage> {
                                     loadURL('mailto:$url?subject=Suppot Message&body=Hey Team!'
                                         'Need help.');
                                   },
-                                  icon: Icon(Icons.mail),
+                                  icon: Icon(Icons.mail,color: Colors.red[800],),
                                   iconSize: width*0.08,
                                   color: Colors.grey[800],
                                 ),
-                                SizedBox(width: width*0.02,),
                                 IconButton(
                                   onPressed: () {
                                     String phone = supportList[index]['phone'];
                                     loadURL('sms:$phone');
                                   },
-                                  icon: Icon(Icons.message),
+                                  icon: Icon(Icons.message,color: Colors.blue[800],),
                                   iconSize:  width*0.08,
                                   color: Colors.grey[800],
                                 ),
-                                SizedBox(width: width*0.02,),
+                                IconButton(
+                                  onPressed: () {
+                                    String name = supportList[index]['name'];
+                                    String mail = supportList[index]['mail'];
+                                    String phone = supportList[index]['phone'];
+                                    Share.share(name+'\n'+mail+'\n'+phone);
+                                  },
+                                  icon: Icon(Icons.share,color: Colors.amber[800],),
+                                  iconSize:  width*0.08,
+                                  color: Colors.grey[800],
+                                ),
                                 IconButton(
                                   onPressed: () {
                                     String phone = supportList[index]['phone'];
                                     loadURL('tel:$phone');
                                   },
-                                  icon: Icon(Icons.call),
+                                  icon: Icon(Icons.call,color: Colors.green[800],),
                                   iconSize:  width*0.08,
                                   color: Colors.grey[800],
                                 ),

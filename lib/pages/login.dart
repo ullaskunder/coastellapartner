@@ -53,42 +53,22 @@ class _LoginState extends State<LoginPage> {
               width: width,
               child: Column(
                 children: <Widget>[
-                  Stack(
-                    children: <Widget>[
+                  SizedBox(
+                    height: height * 0.1,
+                  ),
                       Container(
                         height: height * 0.4,
                         width: width,
                         decoration: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(120))),
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/login_bg.jpg'),
+                            fit: BoxFit.cover
+                          )
+                        ),
                       ),
-                      Positioned(
-                        top: height * 0.2,
-                        left: width * 0.2,
-                        child: Column(
-                          children: <Widget>[
-                            AutoSizeText(
-                              'COASTELLA',
-                              style: GoogleFonts.nunitoSans(
-                                  letterSpacing: 4,
-                                  color: Colors.white,
-                                  fontSize: 40),
-                            ),
-                            AutoSizeText(
-                              'PARTNER',
-                              style: GoogleFonts.nunitoSans(
-                                  letterSpacing: 4,
-                                  color: Colors.white,
-                                  fontSize: 28),
-                            ),
-                          ],
-                        )
-                      ),
-                    ],
-                  ),
+
                   SizedBox(
-                    height: height * 0.1,
+                    height: height * 0.05,
                   ),
                   Padding(
                     padding: EdgeInsets.all(10),
@@ -96,12 +76,11 @@ class _LoginState extends State<LoginPage> {
                       width: width * 0.8,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
                           boxShadow: [
                             BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.6),
-                                blurRadius: 20,
-                                offset: Offset(0, 10))
+                                color: Color.fromRGBO(0, 0, 0, 0.2),
+                                blurRadius: 40,
+                                offset: Offset(5, 5))
                           ]),
                       padding: EdgeInsets.all(10),
                       child: Form(
@@ -147,7 +126,7 @@ class _LoginState extends State<LoginPage> {
                   ),
                   RoundedLoadingButton(
                     width: width * 0.8,
-                    color: Colors.grey[800],
+                    color: Colors.blue[800],
                     child: AutoSizeText(
                       'Login',
                       style: GoogleFonts.nunitoSans(

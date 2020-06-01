@@ -1,18 +1,18 @@
+import 'package:costellapartner/pages/profiledetail.dart';
 import 'package:costellapartner/pages/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:costellapartner/pages/login.dart';
 import 'package:costellapartner/pages/home.dart';
 import 'package:costellapartner/pages/inventory.dart';
 import 'package:costellapartner/pages/orderlist.dart';
-import 'package:costellapartner/pages/profile.dart';
-
+import 'package:costellapartner/pages/profiledetail.dart';
 
 
 void main() => runApp(MaterialApp(
   debugShowCheckedModeBanner: false,
   title: 'COASTELLA',
   theme: ThemeData(
-    primaryColor: Colors.grey[800],
+    primaryColor: Colors.blueGrey[900],
   ),
   initialRoute: '/splash',
   routes: {
@@ -20,7 +20,7 @@ void main() => runApp(MaterialApp(
     '/splash':(context) => SplashPage(),
     '/home':(context) => HomePage(),
     '/orderlist':(context) => OrderListPage(),
-    '/profile':(context) => ProfilePage(),
+    '/profile':(context) => ProfileDetail(),
     '/inventory':(context) => InventoryPage(),
   },
 ));

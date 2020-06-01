@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:costellapartner/pages/feedback.dart';
 import 'package:costellapartner/pages/teamcoastella.dart';
+import 'package:costellapartner/pages/termsandconditions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,245 +24,279 @@ class _InventoryPageState extends State<InventoryPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.grey,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+      backgroundColor: Colors.blueGrey[900],
+      appBar: AppBar(
+        title: Text(
+          'Utilities',
+          style: GoogleFonts.nunitoSans(
+            letterSpacing: 1,
+            color: Colors.white,
+          ),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.blueGrey[900],
+        actions: <Widget>[
+          IconButton(
+            onPressed: ()
+            {
+              Share.share('Hey, Check this app',subject: 'coastella.in');
+            },
+            icon: Icon(Icons.share,color: Colors.white,),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: EdgeInsets.all(14),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => SupportPage()));
-                      },
-                      child: Container(
-                        height: height * 0.2,
-                        width: width * 0.42,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(60)),
-                            color: Color.fromRGBO(255, 255, 255, 0.6)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Center(
-                                child: Icon(
-                              Icons.live_help,
-                              color: Colors.grey[800],
-                              size: height * 0.1,
-                            )),
-                            AutoSizeText(
-                              'HELP',
-                              style: GoogleFonts.nunitoSans(
-                                color: Colors.grey[800],
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: ()
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => SupportPage()));
+                    },
+                    child: Container(
+                      width: width * 0.45,
+                      height: height*0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Image(
+                                image: AssetImage('assets/images/support.png'),
+                                fit: BoxFit.contain,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: AutoSizeText(
+                              'SUPPORT',
+                              style: GoogleFonts.nunitoSans(
+                                  letterSpacing: 1,
+                                  color: Colors.blueGrey[900],
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      width: width * 0.04,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => FeedBackPage()));
-                      },
-                      child: Container(
-                        height: height * 0.2,
-                        width: width * 0.42,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(60)),
-                            color: Color.fromRGBO(255, 255, 255, 0.6)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Center(
-                                child: Icon(
-                              Icons.library_books,
-                              color: Colors.grey[800],
-                              size: height * 0.1,
-                            )),
-                            AutoSizeText(
-                              'FEEDBACK',
-                              style: GoogleFonts.nunitoSans(
-                                color: Colors.grey[800],
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.bold,
+                  ),
+                  GestureDetector(
+                    onTap: ()
+                    {
+                      loadURL('mailto:coastella@gmail.com?subject=Coastella-Partner&body=Hey Team Coastella');
+                    },
+                    child: Container(
+                      width: width * 0.45,
+                      height: height*0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Image(
+                                image: AssetImage('assets/images/email.png'),
+                                fit: BoxFit.contain,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        loadURL(
-                            'mailto:service@coastella.in?subject=Contact Mail&body=Hey Developers.');
-                      },
-                      child: Container(
-                        height: height * 0.2,
-                        width: width * 0.42,
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.only(topLeft: Radius.circular(60)),
-                            color: Color.fromRGBO(255, 255, 255, 0.6)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Center(
-                                child: Icon(
-                              Icons.mail,
-                              color: Colors.grey[800],
-                              size: height * 0.1,
-                            )),
-                            AutoSizeText(
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: AutoSizeText(
                               'E-MAIL',
                               style: GoogleFonts.nunitoSans(
-                                color: Colors.grey[800],
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  letterSpacing: 1,
+                                  color: Colors.blueGrey[900],
+                                  fontSize: 18),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      width: width * 0.04,
+                  ),
+                ],
+              ),
+              SizedBox(height: height*0.02,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: ()
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => FeedBackPage()));
+                    },
+                    child: Container(
+                      width: width * 0.45,
+                      height: height*0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Image(
+                                image: AssetImage('assets/images/feedback.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: AutoSizeText(
+                              'FEEDBACK',
+                              style: GoogleFonts.nunitoSans(
+                                  letterSpacing: 1,
+                                  color: Colors.blueGrey[900],
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => TeamPage()));
-                      },
-                      child: Container(
-                        height: height * 0.2,
-                        width: width * 0.42,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(60)),
-                            color: Color.fromRGBO(255, 255, 255, 0.6)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Center(
-                                child: Icon(
-                              Icons.group,
-                              color: Colors.grey[800],
-                              size: height * 0.1,
-                            )),
-
-                            AutoSizeText(
+                  ),
+                  GestureDetector(
+                    onTap: ()
+                    {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext contex) => TCPage()
+                        )
+                      );
+                    },
+                    child: Container(
+                      width: width * 0.45,
+                      height: height*0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Image(
+                                image: AssetImage('assets/images/tandc.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: AutoSizeText(
+                              'T & C',
+                              style: GoogleFonts.nunitoSans(
+                                  letterSpacing: 1,
+                                  color: Colors.blueGrey[900],
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: height*0.02,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: ()
+                    {
+                      loadURL('http:coastella.in');
+                    },
+                    child: Container(
+                      width: width * 0.45,
+                      height: height*0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Image(
+                                image: AssetImage('assets/images/website.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: AutoSizeText(
+                              'WEBSITE',
+                              style: GoogleFonts.nunitoSans(
+                                  letterSpacing: 1,
+                                  color: Colors.blueGrey[900],
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: ()
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => TeamPage()));
+                    },
+                    child: Container(
+                      width: width * 0.45,
+                      height: height*0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Image(
+                                image: AssetImage('assets/images/team.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: AutoSizeText(
                               'TEAM',
                               style: GoogleFonts.nunitoSans(
-                                color: Colors.grey[800],
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  letterSpacing: 1,
+                                  color: Colors.blueGrey[900],
+                                  fontSize: 18),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: height * 0.04,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Share.share('check out my website http://coastella.in',
-                      subject: 'Look what I made!');
-                },
-                child: Container(
-                  width: width * 0.9,
-                  height: height * 0.12,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(60),
-                      color: Color.fromRGBO(255, 255, 255, 0.6)),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                       AutoSizeText(
-                            'Share ',
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 20,
-                              color: Colors.grey[800],
-                              letterSpacing: 2,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-
-                     Icon(
-                            Icons.share,
-                            color: Colors.grey[800],
-                            size: 28,
-                          ),
-
-                      ],
-                    ),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: height * 0.026,
-              ),
-              GestureDetector(
-                onTap: () {
-                  loadURL('http://coastella.in/');
-                },
-                child: Container(
-                  width: width * 0.9,
-                  height: height * 0.12,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(60),
-                      color: Color.fromRGBO(255, 255, 255, 0.6)),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        AutoSizeText(
-                          'Website ',
-                          style: GoogleFonts.nunitoSans(
-                            fontSize: 20,
-                            color: Colors.grey[800],
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(
-                          Icons.web,
-                          color: Colors.grey[800],
-                          size: 28,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                ],
               ),
             ],
           ),
